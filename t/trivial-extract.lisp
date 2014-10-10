@@ -57,14 +57,18 @@
   (is-true
    (probe-file +zip-content-file+)))
 
-(test best-effort-extraction
-  (run 'teardown)
+(test resetup
+  (run 'tear-down)
   (run 'setup)
+  (is-false
+   (probe-file +tar-gz-content-file+))
+  (is-false
+   (probe-file +zip-content-file+)))
+
+(test best-effort-extraction
   (is-true
    (trivial-extract:extract +tar-gz-file+))
   (run 'probe-tar-and-tar-gz)
-  (run 'teardown)
-  (run 'setup)
   (is-true
    (trivial-extract:extract +zip-file+))
   (run 'probe-zip))
