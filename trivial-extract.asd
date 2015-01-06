@@ -7,6 +7,7 @@
   :version "0.1"
   :author "Fernando Borretti"
   :license "MIT"
+  :homepage "https://github.com/eudoxia0/trivial-extract"
   :depends-on (:archive
                :zip
                :deflate
