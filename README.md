@@ -1,3 +1,7 @@
+# trivial-extract
+
+[![Build Status](https://travis-ci.org/eudoxia0/trivial-extract.svg?branch=master)](https://travis-ci.org/eudoxia0/trivial-extract)
+
 You have an archive. Maybe it's a `.tar`, or a `.tar.gz`, or `.zip`. You don't
 know and don't care. You want its contents out.
 
