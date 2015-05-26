@@ -6,6 +6,7 @@
 (defsystem trivial-extract-test
   :author "Fernando Borretti"
   :license "MIT"
+  :description "Tests for trivial-extract"
   :depends-on (:trivial-extract
                :fiveam
                :trivial-download
