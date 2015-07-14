@@ -42,7 +42,8 @@
 
 (defun extract-zip (pathname)
   "Extract a .zip file to its containing directory."
-  (zip:unzip pathname (cl-fad:pathname-directory-pathname pathname))
+  (zip:unzip pathname (cl-fad:pathname-directory-pathname pathname)
+             :if-exists :supersede)
   t)
 
 (defmacro try-except (try on-failure)
