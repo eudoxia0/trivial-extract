@@ -9,8 +9,11 @@
   :depends-on (:archive
                :zip
                :deflate
+               :which
+               ;; Utilities
                :cl-fad
-               :uiop)
+               :uiop
+               :alexandria)
   :components ((:module "src"
                 :components
                 ((:file "cl")
