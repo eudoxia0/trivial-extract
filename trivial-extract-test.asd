@@ -8,9 +8,7 @@
   :license "MIT"
   :description "Tests for trivial-extract"
   :depends-on (:trivial-extract
-               :fiveam
-               :trivial-download
-               :cl-fad)
+               :fiveam)
   :components ((:module "t"
                 :components
                 ((:file "trivial-extract")))))
