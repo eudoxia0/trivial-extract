@@ -5,6 +5,9 @@
 You have an archive. Maybe it's a `.tar`, or a `.tar.gz`, or `.zip`. You don't
 know and don't care. You want its contents out.
 
+When available, `trivial-extract` uses the native decompression utilities
+(e.g. `tar`, `unzip`), which are usually faster than the Common Lisp versions.
+
 # Usage
 
 Contents are extracted to the file's containing directory. All functions return
