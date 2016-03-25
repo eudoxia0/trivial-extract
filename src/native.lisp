@@ -9,16 +9,18 @@
 
 (defun extract-tar (binary pathname)
   "Extract a tarball to its containing directory."
-  (uiop:run-program (format nil "~S -xf ~S"
+  (uiop:run-program (format nil "~S -xf ~S -C ~S"
                             (namestring binary)
-                            (namestring pathname)))
+                            (namestring pathname)
+                            (namestring (uiop:pathname-directory-pathname pathname))))
   t)
 
 (defun extract-gzip (binary pathname)
   "Extract a .tar.gz file to its containing directory."
-  (uiop:run-program (format nil "~S xzf ~S"
+  (uiop:run-program (format nil "~S xzf ~S -C ~S"
                             (namestring binary)
-                            (namestring pathname)))
+                            (namestring pathname)
+                            (namestring (uiop:pathname-directory-pathname pathname))))
   t)
 
 (defun extract-zip (binary pathname)
