@@ -9,10 +9,13 @@
   :depends-on (:archive
                :zip
                :deflate
-               :cl-fad)
+               :cl-fad
+               :uiop)
   :components ((:module "src"
                 :components
-                ((:file "trivial-extract"))))
+                ((:file "cl")
+                 (:file "native")
+                 (:file "trivial-extract"))))
   :description "Extract .tar/.tar.gz/.zip files."
   :long-description
   #.(uiop:read-file-string
