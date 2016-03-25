@@ -1,80 +1,53 @@
 (in-package :cl-user)
 (defpackage trivial-extract-test
-  (:use :cl :fiveam))
+  (:use :cl :fiveam)
+  (:export :run-tests))
 (in-package :trivial-extract-test)
-
-(defparameter +tmp-dir+
-  (asdf:system-relative-pathname :trivial-extract #p"tmp/"))
-
-(defparameter +tar-gz-url+
-  "http://ftp5.usa.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-2.1.1p4.tar.gz"
-  "We use an OpenSSH tarball, since it should be available for the foreseeable future.")
-
-(defparameter +tar-gz-file+
-  (merge-pathnames #p"file.tar.gz" +tmp-dir+)
-  "The local path to the downloaded file.")
-
-(defparameter +tar-gz-content-file+
-  (merge-pathnames #p"openssh-2.1.1p4/README"
-                   +tmp-dir+)
-  "A file that will be extracted. We test for its existence.")
-
-(defparameter +zip-url+
-  "http://zlib.net/zlib128.zip")
-
-(defparameter +zip-file+
-  (merge-pathnames #p"file.zip" +tmp-dir+))
-
-(defparameter +zip-content-file+
-  (merge-pathnames #p"zlib-1.2.8/README"
-                   +tmp-dir+))
 
 (def-suite extract)
 (in-suite extract)
 
-(test setup
-  (is-true
-   (ensure-directories-exist +tmp-dir+))
-  (is-true
-    (trivial-download:download +tar-gz-url+ +tar-gz-file+))
-  (is-true
-    (trivial-download:download +zip-url+ +zip-file+)))
+(defparameter +tmp+
+  (asdf:system-relative-pathname :trivial-extract #p"t/tmp/"))
 
-(test extract-tar-and-tar-gz
-  (is-true
-   ;; This is implicitly a test of both gunzip and extract-tar
-   (trivial-extract:extract-gzip +tar-gz-file+)))
+(defparameter +tar-file+
+  (asdf:system-relative-pathname :trivial-extract #p"t/file.tar"))
 
-(test probe-tar-and-tar-gz
-  (is-true
-   (probe-file +tar-gz-content-file+)))
+(defparameter +gzip-file+
+  (asdf:system-relative-pathname :trivial-extract #p"t/file.tar.gz"))
 
-(test extract-zip
-  (is-true
-   (trivial-extract:extract-zip +zip-file+)))
+(defparameter +zip-file+
+  (asdf:system-relative-pathname :trivial-extract #p"t/file.zip"))
 
-(test probe-zip
-  (is-true
-   (probe-file +zip-content-file+)))
+(defun test-extract (extractor file)
+  (let ((copy (merge-pathnames #p"tmp.file" +tmp+)))
+    (finishes
+      (ensure-directories-exist +tmp+))
+    (finishes
+      (uiop:copy-file file copy))
+    (is-true
+     (funcall extractor copy))
+    (dolist (extracted (list #p"dir/file.txt"
+                             #p"dir/subdir/file.txt"))
+      (is-true
+       (probe-file (merge-pathnames extracted +tmp+))))
+    (finishes
+      (uiop:delete-directory-tree +tmp+ :validate t))))
 
-(test resetup
-  (run 'tear-down)
-  (run 'setup)
-  (is-false
-   (probe-file +tar-gz-content-file+))
-  (is-false
-   (probe-file +zip-content-file+)))
+(test .tar
+  (dolist (f (list #'trivial-extract:extract-tar
+                   #'trivial-extract.cl:extract-tar))
+    (test-extract f +tar-file+)))
 
-(test best-effort-extraction
-  (is-true
-   (trivial-extract:extract +tar-gz-file+))
-  (run 'probe-tar-and-tar-gz)
-  (is-true
-   (trivial-extract:extract +zip-file+))
-  (run 'probe-zip))
+(test .tar.gz
+  (dolist (f (list #'trivial-extract:extract-gzip
+                   #'trivial-extract.cl:extract-gzip))
+    (test-extract f +gzip-file+)))
 
-(test tear-down
-  (finishes
-    (cl-fad:delete-directory-and-files +tmp-dir+)))
+(test .zip
+  (dolist (f (list #'trivial-extract:extract-zip
+                   #'trivial-extract.cl:extract-zip))
+    (test-extract f +zip-file+)))
 
-(run! 'extract)
+(defun run-tests ()
+  (run! 'extract))
